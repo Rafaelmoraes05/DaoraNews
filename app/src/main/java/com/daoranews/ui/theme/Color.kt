@@ -2,10 +2,13 @@ package com.daoranews.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
+// Cores para o Tema Claro (Light Mode)
+val KindleWhite = Color(0xFFFCFCFC)
+val KindleBlack = Color(0xFF1B1B1B)
+val KindleGray = Color(0xFF8D8D8D)
+val KindleLightGray = Color(0xFFDCDCDC)
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+// Cores para o Tema Escuro (Dark Mode)
+val KindleDark = Color(0xFF121212)
+val KindleOffWhite = Color(0xFFEAEAEA)
+val KindleDarkGray = Color(0xFF4A4A4A)
