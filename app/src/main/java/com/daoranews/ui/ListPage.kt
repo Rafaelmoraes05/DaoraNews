@@ -12,13 +12,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.daoranews.model.Article
+import com.daoranews.model.mockArticles
+import com.daoranews.model.savedArticlesMock
 import com.daoranews.ui.theme.DaoraNewsTheme
 
-val savedArticlesMock = listOf(mockArticles[1], mockArticles[3])
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ListPage() {
+fun ListPage(
+    onArticleClick: (Int) -> Unit
+) {
     val articles = savedArticlesMock
 
     Scaffold() { innerPadding ->
@@ -26,13 +29,14 @@ fun ListPage() {
             EmptyFavoritesState(modifier = Modifier.padding(innerPadding))
         } else {
             LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
+                modifier = Modifier.fillMaxSize().padding(innerPadding),
                 contentPadding = PaddingValues(horizontal = 16.dp)
             ) {
                 items(articles) { article ->
-                    NewsArticleItem(article = article)
+                    NewsArticleItem(
+                        article = article,
+                        onArticleClick = onArticleClick
+                    )
                     Divider(color = MaterialTheme.colorScheme.outline, thickness = 1.dp)
                 }
             }
@@ -61,7 +65,7 @@ fun EmptyFavoritesState(modifier: Modifier = Modifier) {
 @Composable
 fun ListPageWithItemsPreview() {
     DaoraNewsTheme {
-        ListPage()
+        ListPage(onArticleClick = {})
     }
 }
 

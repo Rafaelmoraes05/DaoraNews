@@ -9,6 +9,7 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkKindleScheme = darkColorScheme(
@@ -19,7 +20,9 @@ private val DarkKindleScheme = darkColorScheme(
     onBackground = KindleOffWhite,
     onSurface = KindleOffWhite,
     secondary = KindleDarkGray,
-    outline = KindleDarkGray
+
+    secondaryContainer = Color(0xFF2C2C2C),
+    onSecondaryContainer = KindleOffWhite
 )
 
 // Paleta para o Tema Claro (Modo Padrão) usando as cores Kindle
@@ -31,7 +34,9 @@ private val LightKindleScheme = lightColorScheme(
     onBackground = KindleBlack,
     onSurface = KindleBlack,
     secondary = KindleGray,
-    outline = KindleLightGray
+
+    secondaryContainer = KindleLightGray,
+    onSecondaryContainer = KindleBlack
 )
 
 @Composable

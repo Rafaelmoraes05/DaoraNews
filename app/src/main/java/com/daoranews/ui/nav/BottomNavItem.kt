@@ -16,6 +16,8 @@ sealed interface Route {
     data object List : Route
     @Serializable
     data object Search : Route
+    @Serializable
+    data class ArticleDetail(val articleId: Int) : Route
 }
 sealed class BottomNavItem(
     val title: String,

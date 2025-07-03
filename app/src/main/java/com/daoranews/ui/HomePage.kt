@@ -49,36 +49,20 @@ import com.daoranews.model.Article
 import com.daoranews.ui.theme.DaoraNewsTheme
 import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material3.ScrollableTabRow
-
-// Dados Mockados para o Preview
-val mockArticles = listOf(
-    Article(1, "Nova Era da F1: Carros de 2025 Revelados!", "As mudanças aerodinâmicas prometem corridas mais disputadas...", "Ana R.", "20 de Maio", 5),
-    Article(2, "Nando Norris, da McLaren, Domina em GP de Mônaco", "Uma vitória histórica nas ruas do principado para o jovem piloto.", "Carlos S.", "19 de Maio", 7),
-    Article(3, "O Impacto do 5G na Indústria 4.0", "Velocidade e baixa latência estão transformando as fábricas.", "Tech Journal", "18 de Maio", 8),
-    Article(4, "Como a IA está redefinindo o mercado de trabalho", "Novas profissões surgem enquanto outras se adaptam à automação.", "Bia S.", "17 de Maio", 6)
-)
+import com.daoranews.model.mockArticles
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomePage() {
+fun HomePage(
+    onArticleClick: (Int) -> Unit
+) {
     var selectedTabIndex by remember { mutableStateOf(0) }
-
     val categories = listOf(
-        "Para Você",
-        "Tecnologia",
-        "Esportes",
-        "Mundo",
-        "Fórmula 1",
-        "Política",
-        "Ciência",
-        "Economia",
-        "Cultura"
+        "Para Você", "Tecnologia", "Esportes", "Mundo", "Fórmula 1", "Política", "Ciência"
     )
 
-    Scaffold(
-    ) { innerPadding ->
+    Scaffold() { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
-            // Abas de Categoria em carrosel.
             ScrollableTabRow(
                 selectedTabIndex = selectedTabIndex,
                 containerColor = MaterialTheme.colorScheme.background,
@@ -94,14 +78,17 @@ fun HomePage() {
                 }
             }
 
-
-            // Lista de Notícias
+            // A lista agora usa a variável importada 'mockArticles'
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
             ) {
                 items(mockArticles) { article ->
-                    NewsArticleItem(article = article)
+                    // A função onArticleClick é passada para cada item
+                    NewsArticleItem(
+                        article = article,
+                        onArticleClick = onArticleClick
+                    )
                     Divider(color = MaterialTheme.colorScheme.outline, thickness = 1.dp)
                 }
             }
@@ -110,45 +97,38 @@ fun HomePage() {
 }
 
 @Composable
-fun NewsArticleItem(article: Article) {
+fun NewsArticleItem(
+    article: Article,
+    onArticleClick: (Int) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { /* TODO: Navegar para os detalhes do artigo */ }
+            .clickable { onArticleClick(article.id) }
             .padding(vertical = 16.dp)
     ) {
-        // Título da Notícia
         Text(
             text = article.title,
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onBackground
         )
-
         Spacer(modifier = Modifier.height(4.dp))
-
-        // Snippet
         Text(
             text = article.snippet,
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.secondary
         )
-
         Spacer(modifier = Modifier.height(12.dp))
-
-        // Metadados e Ações
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Autor e Tempo de Leitura
             Text(
                 text = "${article.author} · ${article.date} · ${article.readTimeInMinutes} min de leitura",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.secondary
             )
-
             Spacer(modifier = Modifier.weight(1f))
-
             IconButton(onClick = { /* TODO: Salvar artigo */ }) {
                 Icon(
                     imageVector = Icons.Outlined.BookmarkBorder,
@@ -167,19 +147,11 @@ fun NewsArticleItem(article: Article) {
     }
 }
 
-
-@Preview(showBackground = true, name = "Home Page Light")
+@Preview(showBackground = true, name = "Home Page Preview")
 @Composable
-fun HomePageLightPreview() {
+fun HomePagePreview() {
     DaoraNewsTheme {
-        HomePage()
-    }
-}
-
-@Preview(showBackground = true, name = "Home Page Dark")
-@Composable
-fun HomePageDarkPreview() {
-    DaoraNewsTheme(darkTheme = true) {
-        HomePage()
+        // <<< 5. PREVIEW ATUALIZADO PARA FUNCIONAR COM A NOVA ASSINATURA
+        HomePage(onArticleClick = {})
     }
 }

@@ -10,8 +10,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.AlertDialogDefaults.containerColor
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -19,13 +21,17 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import com.daoranews.ui.HomePage
 import com.daoranews.ui.nav.BottomNavBar
 import com.daoranews.ui.nav.BottomNavItem
 import com.daoranews.ui.nav.MainNavHost
 import com.daoranews.ui.theme.DaoraNewsTheme
+import com.daoranews.ui.theme.KindleBlack
+import com.daoranews.ui.theme.KindleWhite
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -59,7 +65,13 @@ class MainActivity : ComponentActivity() {
                         BottomNavBar(navController = navController, items)
                     },
                     floatingActionButton = {
-                        FloatingActionButton(onClick = { }) {
+                        FloatingActionButton(onClick = { },
+                            containerColor = KindleBlack,
+                            contentColor = KindleWhite,
+                            elevation = FloatingActionButtonDefaults.elevation(
+                                defaultElevation = 2.dp,
+                                pressedElevation = 4.dp)
+                        ) {
                             Icon(Icons.Default.Add, contentDescription = "Adicionar")
                         }
                     }
@@ -77,6 +89,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun HomePagePreview() {
     DaoraNewsTheme {
-        HomePage()
+        HomePage(onArticleClick = {})
     }
 }
