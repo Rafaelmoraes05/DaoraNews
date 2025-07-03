@@ -6,5 +6,7 @@ data class Article(
     val snippet: String,
     val author: String,
     val date: String,
-    val readTimeInMinutes: Int
+    val readTimeInMinutes: Int,
+
+    val fullContent: String
 )
