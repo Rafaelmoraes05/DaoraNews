@@ -31,6 +31,9 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.daoranews.db.fb.FBDatabase
+import com.daoranews.db.fb.toFBUser
+import com.daoranews.model.User
 import com.daoranews.ui.theme.DataField
 import com.daoranews.ui.theme.PasswordField
 import com.google.firebase.Firebase
@@ -117,8 +120,10 @@ fun RegisterPage(modifier: Modifier = Modifier) {
                     Firebase.auth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(activity!!) { task ->
                             if (task.isSuccessful) {
+                                FBDatabase().register(User(name, email).toFBUser())
                                 Toast.makeText(activity,
                                     "Registro OK!", Toast.LENGTH_LONG).show()
+
                             } else {
                                 Toast.makeText(activity,
                                     "Registro FALHOU!", Toast.LENGTH_LONG).show()
