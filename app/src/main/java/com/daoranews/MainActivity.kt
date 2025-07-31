@@ -32,6 +32,8 @@ import com.daoranews.ui.nav.MainNavHost
 import com.daoranews.ui.theme.DaoraNewsTheme
 import com.daoranews.ui.theme.KindleBlack
 import com.daoranews.ui.theme.KindleWhite
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -46,7 +48,9 @@ class MainActivity : ComponentActivity() {
                         TopAppBar(
                             title = { Text("Bem-vindo/a!") },
                             actions = {
-                                IconButton( onClick = { finish() } ) {
+                                IconButton( onClick = {
+                                    Firebase.auth.signOut()
+                                } ) {
                                     Icon(
                                         imageVector =
                                             Icons.AutoMirrored.Filled.ExitToApp,
