@@ -1,6 +1,7 @@
 package com.daoranews.ui.nav
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
@@ -27,7 +28,7 @@ sealed class BottomNavItem(
     data object HomeButton :
         BottomNavItem("Feed", Icons.Default.DateRange, Route.Home)
     data object ListButton :
-        BottomNavItem("Favoritos", Icons.Default.Favorite, Route.List)
+        BottomNavItem("Favoritos", Icons.Filled.Bookmark, Route.List)
     data object SearchButton :
         BottomNavItem("Buscar", Icons.Default.Search, Route.Search)
 }
