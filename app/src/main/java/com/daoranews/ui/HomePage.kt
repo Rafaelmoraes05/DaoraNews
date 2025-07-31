@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Notifications
@@ -49,11 +50,14 @@ import com.daoranews.model.Article
 import com.daoranews.ui.theme.DaoraNewsTheme
 import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.runtime.collectAsState
 import com.daoranews.model.mockArticles
+import com.daoranews.viewModel.MainViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomePage(
+    viewModel: MainViewModel,
     onArticleClick: (Int) -> Unit
 ) {
     var selectedTabIndex by remember { mutableStateOf(0) }
@@ -85,9 +89,13 @@ fun HomePage(
             ) {
                 items(mockArticles) { article ->
                     // A função onArticleClick é passada para cada item
+
+                    val isFavorited by viewModel.isFavorited(article.id).collectAsState(initial = false)
                     NewsArticleItem(
                         article = article,
-                        onArticleClick = onArticleClick
+                        onArticleClick = onArticleClick,
+                        isFavorited =isFavorited,
+                        onBookmarkClick = { viewModel.toggleFavorite(article) }
                     )
                     Divider(color = MaterialTheme.colorScheme.outline, thickness = 1.dp)
                 }
@@ -99,7 +107,9 @@ fun HomePage(
 @Composable
 fun NewsArticleItem(
     article: Article,
-    onArticleClick: (Int) -> Unit
+    onArticleClick: (Int) -> Unit,
+    isFavorited: Boolean,
+    onBookmarkClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -129,11 +139,12 @@ fun NewsArticleItem(
                 color = MaterialTheme.colorScheme.secondary
             )
             Spacer(modifier = Modifier.weight(1f))
-            IconButton(onClick = { /* TODO: Salvar artigo */ }) {
+
+            IconButton(onClick = onBookmarkClick) {
                 Icon(
-                    imageVector = Icons.Outlined.BookmarkBorder,
-                    contentDescription = "Salvar Artigo",
-                    tint = MaterialTheme.colorScheme.secondary
+                    imageVector = if (isFavorited) Icons.Filled.Bookmark else Icons.Outlined.BookmarkBorder,
+                    contentDescription = if (isFavorited) "Remover dos favoritos" else "Salvar Artigo",
+                    tint = if (isFavorited) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
                 )
             }
             IconButton(onClick = { /* TODO: Mostrar mais opções */ }) {
@@ -144,14 +155,5 @@ fun NewsArticleItem(
                 )
             }
         }
-    }
-}
-
-@Preview(showBackground = true, name = "Home Page Preview")
-@Composable
-fun HomePagePreview() {
-    DaoraNewsTheme {
-        // <<< 5. PREVIEW ATUALIZADO PARA FUNCIONAR COM A NOVA ASSINATURA
-        HomePage(onArticleClick = {})
     }
 }

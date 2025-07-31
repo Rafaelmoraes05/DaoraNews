@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.daoranews.model.Article // Importe sua classe Article
 import com.daoranews.model.mockArticles
 import com.daoranews.ui.theme.DaoraNewsTheme
+import com.daoranews.viewModel.MainViewModel
 import kotlinx.coroutines.delay
 
 // Estados para a UI da busca, deixando o código mais limpo
@@ -38,6 +39,7 @@ enum class FilterType {
 
 @Composable
 fun SearchPage(
+    viewModel: MainViewModel,
     onArticleClick: (Int) -> Unit
 ) {
     var searchQuery by rememberSaveable { mutableStateOf("") }
@@ -120,10 +122,13 @@ fun SearchPage(
                 is SearchUiState.Success -> {
                     LazyColumn(modifier = Modifier.fillMaxSize()) {
                         items(state.articles) { article ->
-                            // <<< 2. FUNÇÃO DE CLIQUE PASSADA PARA O ITEM
+                            val isFavorited by viewModel.isFavorited(article.id).collectAsState(initial = false)
+
                             NewsArticleItem(
                                 article = article,
-                                onArticleClick = onArticleClick
+                                onArticleClick = onArticleClick,
+                                isFavorited = isFavorited,
+                                onBookmarkClick = { viewModel.toggleFavorite(article) }
                             )
                             Divider(color = MaterialTheme.colorScheme.outline, thickness = 1.dp)
                         }
@@ -164,14 +169,5 @@ fun NoResultsMessage(query: String) {
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.secondary
         )
-    }
-}
-
-// --- Preview ---
-@Preview(showBackground = true, name = "Search Page Initial")
-@Composable
-fun SearchPagePreview() {
-    DaoraNewsTheme {
-        SearchPage(onArticleClick = {})
     }
 }

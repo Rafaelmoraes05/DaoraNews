@@ -81,31 +81,23 @@ class MainActivity : ComponentActivity() {
                         )
                         BottomNavBar(navController = navController, items)
                     },
-                    floatingActionButton = {
-                        FloatingActionButton(onClick = { },
-                            containerColor = KindleBlack,
-                            contentColor = KindleWhite,
-                            elevation = FloatingActionButtonDefaults.elevation(
-                                defaultElevation = 2.dp,
-                                pressedElevation = 4.dp)
-                        ) {
-                            Icon(Icons.Default.Add, contentDescription = "Adicionar")
-                        }
-                    }
+//                    floatingActionButton = {
+//                        FloatingActionButton(onClick = { },
+//                            containerColor = KindleBlack,
+//                            contentColor = KindleWhite,
+//                            elevation = FloatingActionButtonDefaults.elevation(
+//                                defaultElevation = 2.dp,
+//                                pressedElevation = 4.dp)
+//                        ) {
+//                            Icon(Icons.Default.Add, contentDescription = "Adicionar")
+//                        }
+//                    }
                 ) { innerPadding ->
                     Box(modifier = Modifier.padding(innerPadding)) {
-                        MainNavHost(navController = navController)
+                        MainNavHost(navController = navController, viewModel)
                     }
                 }
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun HomePagePreview() {
-    DaoraNewsTheme {
-        HomePage(onArticleClick = {})
     }
 }

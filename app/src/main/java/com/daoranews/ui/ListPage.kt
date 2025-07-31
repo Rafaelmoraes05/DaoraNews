@@ -5,6 +5,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -15,27 +17,33 @@ import com.daoranews.model.Article
 import com.daoranews.model.mockArticles
 import com.daoranews.model.savedArticlesMock
 import com.daoranews.ui.theme.DaoraNewsTheme
+import com.daoranews.viewModel.MainViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListPage(
+    viewModel: MainViewModel,
     onArticleClick: (Int) -> Unit
 ) {
-    val articles = savedArticlesMock
+    val favoritedArticles by viewModel.favoritedArticles.collectAsState()
 
     Scaffold() { innerPadding ->
-        if (articles.isEmpty()) {
+        if (favoritedArticles.isEmpty()) {
             EmptyFavoritesState(modifier = Modifier.padding(innerPadding))
         } else {
             LazyColumn(
-                modifier = Modifier.fillMaxSize().padding(innerPadding),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
                 contentPadding = PaddingValues(horizontal = 16.dp)
             ) {
-                items(articles) { article ->
+                items(favoritedArticles, key = { it.id }) { article ->
                     NewsArticleItem(
                         article = article,
-                        onArticleClick = onArticleClick
+                        onArticleClick = onArticleClick,
+                        isFavorited = true,
+                        onBookmarkClick = { viewModel.toggleFavorite(article) }
                     )
                     Divider(color = MaterialTheme.colorScheme.outline, thickness = 1.dp)
                 }
@@ -43,7 +51,6 @@ fun ListPage(
         }
     }
 }
-
 @Composable
 fun EmptyFavoritesState(modifier: Modifier = Modifier) {
     Box(
@@ -60,15 +67,6 @@ fun EmptyFavoritesState(modifier: Modifier = Modifier) {
         )
     }
 }
-
-@Preview(showBackground = true, name = "Favoritos - Com Itens")
-@Composable
-fun ListPageWithItemsPreview() {
-    DaoraNewsTheme {
-        ListPage(onArticleClick = {})
-    }
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true, name = "Favoritos - Vazio")
 @Composable

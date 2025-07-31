@@ -2,15 +2,27 @@
 
 package com.daoranews.ui
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -19,14 +31,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.daoranews.model.getArticleById
 import com.daoranews.ui.theme.DaoraNewsTheme
+import com.daoranews.ui.theme.KindleBlack
+import com.daoranews.ui.theme.KindleWhite
+import com.daoranews.viewModel.MainViewModel
 
 @Composable
 fun ArticleDetailPage(
     articleId: Int,
-    onNavigateBack: () -> Unit // Função para ser chamada ao clicar no botão de voltar
+    viewModel: MainViewModel,
+    onNavigateBack: () -> Unit
 ) {
-    // Simulando a busca do artigo. No app real, isso viria de um ViewModel.
     val article = remember { getArticleById(articleId) }
+    val isFavorited by viewModel.isFavorited(articleId).collectAsState(initial = false)
+    var isFabMenuExpanded by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -40,22 +57,73 @@ fun ArticleDetailPage(
                         )
                     }
                 },
-                actions = {
-                    IconButton(onClick = { /* TODO: Lógica para salvar */ }) {
-                        Icon(Icons.Outlined.BookmarkBorder, contentDescription = "Salvar")
-                    }
-                    IconButton(onClick = { /* TODO: Lógica para compartilhar */ }) {
-                        Icon(Icons.Outlined.Share, contentDescription = "Compartilhar")
-                    }
-                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.background
                 )
             )
+        },
+        floatingActionButton = {
+            if (article != null) {
+                Column(
+                    horizontalAlignment = Alignment.End,
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    AnimatedVisibility(
+                        visible = isFabMenuExpanded,
+                        enter = fadeIn() + slideInVertically(initialOffsetY = { it / 2 }),
+                        exit = fadeOut() + slideOutVertically(targetOffsetY = { it / 2 })
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.End,
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            // Botão de Compartilhar
+                            SmallFloatingActionButton(
+                                onClick = {
+                                    // TODO: Lógica para compartilhar o artigo
+                                    isFabMenuExpanded = false
+                                },
+                                containerColor = KindleBlack,
+                                contentColor = KindleWhite
+                            ) {
+                                Icon(Icons.Outlined.Share, "Compartilhar Artigo")
+                            }
+
+                            // Botão de Favoritar
+                            SmallFloatingActionButton(
+                                onClick = {
+                                    viewModel.toggleFavorite(article)
+                                    isFabMenuExpanded = false
+                                },
+                                containerColor = KindleBlack,
+                                contentColor = KindleWhite
+                            ) {
+                                Icon(
+                                    imageVector = if (isFavorited) Icons.Filled.Bookmark else Icons.Outlined.BookmarkBorder,
+                                    contentDescription = "Favoritar Artigo"
+                                )
+                            }
+                        }
+                    }
+
+                    // Botão principal que expande/recolhe o menu
+                    FloatingActionButton(
+                        onClick = { isFabMenuExpanded = !isFabMenuExpanded },
+                        containerColor = KindleBlack,
+                        contentColor = KindleWhite
+                    ) {
+                        Icon(
+                            // Muda o ícone para 'X' quando o menu está aberto
+                            imageVector = if (isFabMenuExpanded) Icons.Default.Close else Icons.Default.Add,
+                            contentDescription = "Abrir menu de ações"
+                        )
+                    }
+                }
+            }
         }
-    ) { innerPadding ->
+    )
+    { innerPadding ->
         if (article != null) {
-            // Usamos LazyColumn para o conteúdo ser rolável e performático
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
@@ -100,7 +168,6 @@ fun ArticleDetailPage(
                 }
             }
         } else {
-            // Estado de erro caso o artigo não seja encontrado
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -108,14 +175,5 @@ fun ArticleDetailPage(
                 Text("Artigo não encontrado.")
             }
         }
-    }
-}
-
-// --- Preview ---
-@Preview(showBackground = true, name = "Article Detail Page")
-@Composable
-fun ArticleDetailPagePreview() {
-    DaoraNewsTheme {
-        ArticleDetailPage(articleId = 1, onNavigateBack = {})
     }
 }
